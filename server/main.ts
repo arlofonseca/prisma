@@ -1,9 +1,14 @@
+import { GetPlayer } from '@overextended/ox_core/server';
 import { addCommand } from '@overextended/ox_lib/server';
 import { characters, PrismaClient, users } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
 addCommand(['fetchusers'], async (source: number): Promise<void> => {
+  const player = GetPlayer(source);
+
+  if (!player.charId) return;
+
   try {
     const data: users[] = await prisma.users.findMany();
     exports.chat.addMessage(source, '^#5e81ac--------- ^#ffffffUser Data ^#5e81ac---------');
@@ -21,6 +26,10 @@ addCommand(['fetchusers'], async (source: number): Promise<void> => {
 );
 
 addCommand(['viewchar'], async (source: number, args: { stateId: string }): Promise<void> => {
+  const player = GetPlayer(source);
+
+  if (!player.charId) return;
+
   const stateId: string = args.stateId;
 
   try {
@@ -64,6 +73,10 @@ addCommand(['viewchar'], async (source: number, args: { stateId: string }): Prom
 );
 
 addCommand(['updatechar'], async (source: number, args: { stateId: string; firstName: string; lastName: string }): Promise<void> => {
+  const player = GetPlayer(source);
+
+  if (!player.charId) return;
+
   const stateId: string = args.stateId;
   const firstName: string = args.firstName;
   const lastName: string = args.lastName;
@@ -115,6 +128,10 @@ addCommand(['updatechar'], async (source: number, args: { stateId: string; first
 );
 
 addCommand(['countchars'], async (source: number): Promise<void> => {
+  const player = GetPlayer(source);
+
+  if (!player.charId) return;
+
   try {
     const count: number = await prisma.characters.count();
     exports.chat.addMessage(source, `^#5e81ac[INFO] ^#ffffffThere are currently ^#5e81ac${count} ^#ffffffcharacters in the database.`);
@@ -131,6 +148,10 @@ addCommand(['countchars'], async (source: number): Promise<void> => {
 const inactivityLimit = 30; // In days
 
 addCommand(['deleteinactivechars'], async (source: number): Promise<void> => {
+  const player = GetPlayer(source);
+
+  if (!player.charId) return;
+
   try {
     const date = new Date();
     date.setDate(date.getDate() - inactivityLimit);

@@ -5,15 +5,11 @@ version '1.0.0'
 author 'arlofonseca'
 repository 'https://github.com/arlofonseca/prisma'
 
-server_scripts {
-  'dist/server.js',
-}
+server_script 'dist/server.js'
 
 dependencies {
   '/server:7290',
   '/onesync',
   'ox_lib',
+  'ox_core'
 }
-
-lua54 'yes'
-use_experimental_fxv2_oal 'yes'

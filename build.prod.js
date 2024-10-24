@@ -4,10 +4,10 @@ import pkg from 'esbuild-plugin-fileloc'
 const { filelocPlugin } = pkg
 
 build({
-  entryPoints: ['./server.ts'],
+  entryPoints: ['./server/main.ts'],
   outfile: './dist/server.js',
   platform: 'node',
-  target: 'node16',
+  target: 'es2020',
   sourcemap: 'inline',
   bundle: true,
   minify: true,
