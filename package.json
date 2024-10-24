@@ -1,0 +1,23 @@
+{
+  "name": "prisma",
+  "version": "1.0.0",
+  "author": "arlofonseca",
+  "type": "module",
+  "scripts": {
+    "pull": "pnpm prisma db pull",
+    "generate": "pnpm prisma generate",
+    "build": "node build.prod.js"
+  },
+  "dependencies": {
+    "@prisma/client": "^4.4.0"
+  },
+  "devDependencies": {
+    "@citizenfx/server": "latest",
+    "@overextended/ox_lib": "latest",
+    "@types/node": "^22.7.4",
+    "esbuild": "^0.24.0",
+    "esbuild-plugin-fileloc": "^0.0.6",
+    "prisma": "^4.4.0",
+    "typescript": "^5.6.3"
+  }
+}

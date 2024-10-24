@@ -1,0 +1,17 @@
+{
+  "compilerOptions": {
+    "strictNullChecks": true,
+    "noImplicitAny": true,
+    "module": "commonjs",
+    "allowJs": false,
+    "lib": ["esnext"],
+    "types": ["@citizenfx/server", "@types/node"],
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "sourceMap": true
+  },
+  "include": ["./**/*"],
+  "exclude": ["node_modules"],
+  "semi": [true, "always"]
+}

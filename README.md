@@ -1,0 +1,1 @@
+This resource was created to work with [ox_core](https://github.com/overextended/ox_core). Most of the code has been left out/removed for obvious reasons, basically this is just a starting point for using [prisma](https://www.prisma.io) within FiveM.
