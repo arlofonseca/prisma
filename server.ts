@@ -113,3 +113,43 @@ addCommand(['updatechar'], async (source: number, args: { stateId: string; first
     restricted: 'group.admin',
   },
 );
+
+addCommand(['countchars'], async (source: number): Promise<void> => {
+  try {
+    const count: number = await prisma.characters.count();
+    exports.chat.addMessage(source, `^#5e81ac[INFO] ^#ffffffThere are currently ^#5e81ac${count} ^#ffffffcharacters in the database.`);
+  } catch (error) {
+    console.error('/countchars:', error);
+    exports.chat.addMessage(source, '^#d73232ERROR ^#ffffffAn error occurred while trying to count characters.');
+  }
+},
+  {
+    restricted: 'group.admin',
+  },
+);
+
+const inactivityLimit = 30; // In days
+
+addCommand(['deleteinactivechars'], async (source: number): Promise<void> => {
+  try {
+    const date = new Date();
+    date.setDate(date.getDate() - inactivityLimit);
+
+    const result = await prisma.characters.deleteMany({
+      where: {
+        lastPlayed: {
+          lt: date,
+        },
+      },
+    });
+
+    exports.chat.addMessage(source, `^#5e81ac[ADMIN] ^#ffffffDeleted ^#5e81ac${result.count} ^#ffffffinactive characters who haven't been active for more than ${inactivityLimit} days.`);
+  } catch (error) {
+    console.error('/deleteinactivechars:', error);
+    exports.chat.addMessage(source, '^#d73232ERROR ^#ffffffAn error occurred while trying to delete inactive characters.');
+  }
+},
+  {
+    restricted: 'group.admin',
+  },
+);
