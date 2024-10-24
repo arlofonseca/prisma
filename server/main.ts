@@ -1,3 +1,4 @@
+import * as Cfx from '@nativewrappers/fivem/server';
 import { GetPlayer } from '@overextended/ox_core/server';
 import { addCommand } from '@overextended/ox_lib/server';
 import { characters, PrismaClient, users } from '@prisma/client';
@@ -174,3 +175,18 @@ addCommand(['deleteinactivechars'], async (source: number): Promise<void> => {
     restricted: 'group.admin',
   },
 );
+
+on('onResourceStart', async (resourceName: string): Promise<void> => {
+  if (resourceName !== 'prisma') return;
+
+  await Cfx.Delay(100);
+
+  try {
+    await prisma.$connect();
+    console.log('[PRISMA] Successfully connected to database!');
+  } catch (error) {
+    console.error('[PRISMA] Failed to connect to database:', error);
+  } finally {
+    await prisma.$disconnect();
+  }
+});
