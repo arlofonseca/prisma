@@ -19,16 +19,12 @@ addCommand(['fetchusers'], async (source: number): Promise<void> => {
   restricted: 'group.admin',
 });
 
-addCommand(['viewchar'], async (source: number, args: { charId: number }): Promise<void> => {
-  const charId: number = args.charId;
-  if (isNaN(charId)) {
-    exports.chat.addMessage(source, `^#d73232ERROR ^#ffffffInvalid character ID.`);
-    return;
-  }
+addCommand(['viewchar'], async (source: number, args: { stateId: string }): Promise<void> => {
+  const stateId: string = args.stateId;
 
   try {
     const character = await prisma.characters.findUnique({
-      where: { charId },
+      where: { stateId },
       select: {
         firstName: true,
         lastName: true,
@@ -43,7 +39,7 @@ addCommand(['viewchar'], async (source: number, args: { charId: number }): Promi
     });
 
     if (!character) {
-      exports.chat.addMessage(source, `^#d73232ERROR ^#ffffffCharacter with ID ${charId} does not exist.`);
+      exports.chat.addMessage(source, `^#d73232ERROR ^#ffffffCharacter with ID ${stateId} does not exist.`);
       return;
     }
 
@@ -56,8 +52,8 @@ addCommand(['viewchar'], async (source: number, args: { charId: number }): Promi
 }, {
   params: [
     {
-      name: 'charId',
-      paramType: 'number',
+      name: 'stateId',
+      paramType: 'string',
       optional: false,
     },
   ],
