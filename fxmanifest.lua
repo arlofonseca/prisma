@@ -5,7 +5,7 @@ version '1.0.1'
 author 'arlofonseca'
 repository 'https://github.com/arlofonseca/prisma'
 
-server_script 'dist/server.js'
+server_script 'dist/server/*.js'
 
 dependencies {
   '/server:7290',

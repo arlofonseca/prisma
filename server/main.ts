@@ -1,9 +1,7 @@
 import * as Cfx from '@nativewrappers/fivem/server';
 import { GetPlayer } from '@overextended/ox_core/server';
 import { addCommand } from '@overextended/ox_lib/server';
-import { characters, PrismaClient, users } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import db from '../@types/DB';
 
 addCommand(['fetchusers'], async (source: number): Promise<void> => {
   const player = GetPlayer(source);
@@ -11,7 +9,7 @@ addCommand(['fetchusers'], async (source: number): Promise<void> => {
   if (!player.charId) return;
 
   try {
-    const data: users[] = await prisma.users.findMany();
+    const data = await db.fetchAllUsers();
     exports.chat.addMessage(source, '^#5e81ac--------- ^#ffffffUser Data ^#5e81ac---------');
     for (const user of data) {
       exports.chat.addMessage(source, `User ID: ^#5e81ac${user.userId} ^#ffffff| Username: ^#5e81ac${user.username ?? 'N/A'} ^#ffffff| License2: ^#5e81ac${user.license2} ^#ffffff| Steam: ^#5e81ac${user.steam ?? 'N/A'} ^#ffffff| FiveM: ^#5e81ac${user.fivem ?? 'N/A'} ^#ffffff| Discord: ^#5e81ac${user.discord ?? 'N/A'}`);
@@ -34,21 +32,7 @@ addCommand(['viewchar'], async (source: number, args: { stateId: string }): Prom
   const stateId: string = args.stateId;
 
   try {
-    const character = await prisma.characters.findUnique({
-      where: { stateId },
-      select: {
-        firstName: true,
-        lastName: true,
-        gender: true,
-        dateOfBirth: true,
-        phoneNumber: true,
-        lastPlayed: true,
-        health: true,
-        armour: true,
-        statuses: true,
-      },
-    });
-
+    const character = await db.fetchCharacterByStateId(stateId);
     if (!character) {
       exports.chat.addMessage(source, `^#d73232ERROR ^#ffffffCharacter with ID ${stateId} does not exist.`);
       return;
@@ -83,22 +67,11 @@ addCommand(['updatechar'], async (source: number, args: { stateId: string; first
   const lastName: string = args.lastName;
 
   try {
-    const character: characters | null = await prisma.characters.findUnique({
-      where: { stateId },
-    });
-
+    const character = await db.updateCharacterName(stateId, firstName, lastName);
     if (!character) {
       exports.chat.addMessage(source, `^#d73232ERROR ^#ffffffCharacter with ID ${stateId} does not exist.`);
       return;
     }
-
-    await prisma.characters.update({
-      where: { stateId },
-      data: {
-        firstName,
-        lastName,
-      },
-    });
 
     exports.chat.addMessage(source, `^#5e81acSuccessfully changed character's name to ^#ffffff${firstName} ${lastName}`);
   } catch (error) {
@@ -134,7 +107,7 @@ addCommand(['countchars'], async (source: number): Promise<void> => {
   if (!player.charId) return;
 
   try {
-    const count: number = await prisma.characters.count();
+    const count: number = await db.fetchCharacterCount();
     exports.chat.addMessage(source, `^#5e81ac[INFO] ^#ffffffThere are currently ^#5e81ac${count} ^#ffffffcharacters in the database.`);
   } catch (error) {
     console.error('/countchars:', error);
@@ -146,32 +119,37 @@ addCommand(['countchars'], async (source: number): Promise<void> => {
   },
 );
 
-const inactivityLimit = 30; // In days
-
-addCommand(['deleteinactivechars'], async (source: number): Promise<void> => {
+addCommand(['deleteinactivechars'], async (source: number, args: { limit?: string }): Promise<void> => {
   const player = GetPlayer(source);
 
   if (!player.charId) return;
 
+  const limit: number = args.limit ? parseInt(args.limit) : 30;
+  if (isNaN(limit) || limit <= 0) {
+    exports.chat.addMessage(source, '^#d73232ERROR ^#ffffffInvalid number of days specified.');
+    return;
+  }
+
   try {
-    const date = new Date();
-    date.setDate(date.getDate() - inactivityLimit);
-
-    const result = await prisma.characters.deleteMany({
-      where: {
-        lastPlayed: {
-          lt: date,
-        },
-      },
-    });
-
-    exports.chat.addMessage(source, `^#5e81ac[ADMIN] ^#ffffffDeleted ^#5e81ac${result.count} ^#ffffffinactive characters who haven't been active for more than ${inactivityLimit} days.`);
+    const count: number = await db.deleteInactiveCharacters(limit);
+    if (count === 0) {
+      exports.chat.addMessage(source, `^#5e81ac[ADMIN] ^#ffffffNo inactive characters were found for deletion.`);
+    } else {
+      exports.chat.addMessage(source, `^#5e81ac[ADMIN] ^#ffffffDeleted ^#5e81ac${count} ^#ffffffinactive characters who haven't been active for more than ${limit} days.`);
+    }
   } catch (error) {
     console.error('/deleteinactivechars:', error);
     exports.chat.addMessage(source, '^#d73232ERROR ^#ffffffAn error occurred while trying to delete inactive characters.');
   }
 },
   {
+    params: [
+      {
+        name: 'limit',
+        paramType: 'string',
+        optional: true, // Default 30 days if no limit is provided, can leave as optional.
+      },
+    ],
     restricted: 'group.admin',
   },
 );
@@ -182,11 +160,11 @@ on('onResourceStart', async (resourceName: string): Promise<void> => {
   await Cfx.Delay(100);
 
   try {
-    await prisma.$connect();
+    await db.connect();
     console.log('[PRISMA] Successfully connected to database!');
   } catch (error) {
     console.error('[PRISMA] Failed to connect to database:', error);
   } finally {
-    await prisma.$disconnect();
+    await db.disconnect();
   }
 });

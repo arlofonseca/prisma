@@ -5,10 +5,9 @@ const { filelocPlugin } = pkg
 
 build({
   entryPoints: ['./server/main.ts'],
-  outfile: './dist/server.js',
+  outfile: './dist/server/main.js',
   platform: 'node',
   target: 'es2020',
-  sourcemap: 'inline',
   bundle: true,
   minify: true,
   plugins: [filelocPlugin()]
