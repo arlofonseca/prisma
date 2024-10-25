@@ -18,7 +18,7 @@ function onRebuild() {
 const runServer = async () => {
   const ctx = await context({
     entryPoints: ['./server/main.ts'],
-    outfile: './dist/server.js',
+    outfile: './dist/server/main.js',
     platform: 'node',
     target: 'es2020',
     minify: false,
