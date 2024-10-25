@@ -6,8 +6,9 @@
   "type": "module",
   "version": "1.0.1",
   "scripts": {
-    "pull": "pnpm prisma db pull",
-    "generate": "pnpm prisma generate",
+    "pull": "prisma db pull",
+    "generate": "prisma generate",
+    "studio": "prisma studio",
     "build": "node build.prod.js",
     "watch": "node build.dev.js",
     "format": "prettier --write ."

@@ -5,7 +5,7 @@
     <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat" alt="License: MIT">
   </a>
   <a href="https://github.com/arlofonseca/prisma/commits/main/">
-    <img src="https://img.shields.io/github/last-commit/arlofonseca/prisma.svg?style=flat" alt="Last commit">
+    <img src="https://img.shields.io/github/last-commit/arlofonseca/prisma.svg?style=flat" alt="Last Commit">
   </a>
 </p>
 
@@ -16,8 +16,9 @@
 ## Features
 
 - Database management through class object (e.g., `Prisma`).
-- Prisma generates TypeScript types based on your database schema for compile-time checks.
+- Prisma generates types based on your database schema for compile-time checks.
 - Perform queries without writing raw SQL.
+- Access to Prisma Studio for a web-based database interface.
 - Supports various databases (e.g., PostgreSQL, MySQL, and MariaDB).
 
 ## Installation
