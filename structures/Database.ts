@@ -23,13 +23,8 @@ export class Database {
     return this.prisma.characters.findMany({
       where: {
         firstName: {
-          contains: firstName,
-          mode: 'insensitive',
+          contains: firstName.toLowerCase(),
         },
-      },
-      select: {
-        firstName: true,
-        lastName: true,
       },
     });
   }
