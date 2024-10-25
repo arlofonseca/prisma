@@ -1,16 +1,14 @@
-// import * as Cfx from '@nativewrappers/fivem/server';
-// import { GetPlayer } from '@overextended/ox_core/server';
+import * as Cfx from '@nativewrappers/fivem/server';
+import { GetPlayer } from '@overextended/ox_core/server';
 import { addCommand } from '@overextended/ox_lib/server';
 import db from '../@types/DB';
-
-// @todo commented code is causing a weird identifier error on resource start
 
 addCommand(
   ['fetchusers'],
   async (source: number): Promise<void> => {
-    // const player = GetPlayer(source);
+    const player = GetPlayer(source);
 
-    // if (!player.charId) return;
+    if (!player?.charId) return;
 
     try {
       const data = await db.fetchAllUsers();
@@ -37,9 +35,9 @@ addCommand(
 addCommand(
   ['viewchar'],
   async (source: number, args: { stateId: string }): Promise<void> => {
-    // const player = GetPlayer(source);
+    const player = GetPlayer(source);
 
-    // if (!player.charId) return;
+    if (!player?.charId) return;
 
     const stateId: string = args.stateId;
 
@@ -86,9 +84,9 @@ addCommand(
     source: number,
     args: { stateId: string; firstName: string; lastName: string },
   ): Promise<void> => {
-    // const player = GetPlayer(source);
+    const player = GetPlayer(source);
 
-    // if (!player.charId) return;
+    if (!player?.charId) return;
 
     const stateId: string = args.stateId;
     const firstName: string = args.firstName;
@@ -141,9 +139,9 @@ addCommand(
 addCommand(
   ['countchars'],
   async (source: number): Promise<void> => {
-    // const player = GetPlayer(source);
+    const player = GetPlayer(source);
 
-    // if (!player.charId) return;
+    if (!player?.charId) return;
 
     try {
       const count: number = await db.fetchCharacterCount();
@@ -167,9 +165,9 @@ addCommand(
 addCommand(
   ['deleteinactivechars'],
   async (source: number, args: { limit?: string }): Promise<void> => {
-    // const player = GetPlayer(source);
+    const player = GetPlayer(source);
 
-    // if (!player.charId) return;
+    if (!player?.charId) return;
 
     const limit: number = args.limit ? parseInt(args.limit) : 30;
     if (isNaN(limit) || limit <= 0) {
@@ -213,9 +211,9 @@ addCommand(
 addCommand(
   ['searchchar'],
   async (source: number, args: { firstName: string }): Promise<void> => {
-    // const player = GetPlayer(source);
+    const player = GetPlayer(source);
 
-    // if (!player.charId) return;
+    if (!player?.charId) return;
 
     const firstName: string = args.firstName;
 
@@ -262,7 +260,7 @@ addCommand(
 on('onResourceStart', async (resourceName: string): Promise<void> => {
   if (resourceName !== 'prisma') return;
 
-  // await Cfx.Delay(100);
+  await Cfx.Delay(100);
 
   try {
     await db.connect();

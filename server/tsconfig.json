@@ -2,11 +2,11 @@
   "compilerOptions": {
     "strictNullChecks": true,
     "noImplicitAny": true,
-    "module": "commonjs",
+    "module": "es2020",
     "allowJs": false,
-    "lib": ["esnext"],
+    "lib": ["es2021"],
     "types": ["@citizenfx/server", "@types/node"],
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "sourceMap": true
