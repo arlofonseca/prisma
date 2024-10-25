@@ -1,3 +1,4 @@
+// @ts-ignore
 import { characters, PrismaClient, users } from '@prisma/client';
 
 export class Database {
