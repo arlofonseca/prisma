@@ -15,11 +15,30 @@ export class Database {
     return this.prisma.characters.count();
   }
 
-  fetchCharacterByStateId(stateId: string): Promise<characters | null> {
+  getCharacterByStateId(stateId: string): Promise<characters | null> {
     return this.prisma.characters.findUnique({ where: { stateId } });
   }
 
-  updateCharacterName(stateId: string, firstName: string, lastName: string): Promise<characters | null> {
+  async getCharacterByFirstName(firstName: string): Promise<characters[]> {
+    return this.prisma.characters.findMany({
+      where: {
+        firstName: {
+          contains: firstName,
+          mode: 'insensitive',
+        },
+      },
+      select: {
+        firstName: true,
+        lastName: true,
+      },
+    });
+  }
+
+  updateCharacterName(
+    stateId: string,
+    firstName: string,
+    lastName: string,
+  ): Promise<characters | null> {
     return this.prisma.characters.update({
       where: { stateId },
       data: { firstName, lastName },

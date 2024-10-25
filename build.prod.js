@@ -1,7 +1,7 @@
-import { build } from 'esbuild'
-import pkg from 'esbuild-plugin-fileloc'
+import { build } from 'esbuild';
+import pkg from 'esbuild-plugin-fileloc';
 
-const { filelocPlugin } = pkg
+const { filelocPlugin } = pkg;
 
 build({
   entryPoints: ['./server/main.ts'],
@@ -10,12 +10,12 @@ build({
   target: 'es2020',
   bundle: true,
   minify: true,
-  plugins: [filelocPlugin()]
+  plugins: [filelocPlugin()],
 })
   .then(() => {
-    console.log('Successfully built server')
+    console.log('Successfully built server');
   })
-  .catch((error) => {
-    console.error('Failed building server:', error)
-    process.exit(1)
-  })
+  .catch(error => {
+    console.error('Failed building server:', error);
+    process.exit(1);
+  });

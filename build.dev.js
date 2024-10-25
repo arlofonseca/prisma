@@ -6,9 +6,12 @@ let lastRebuild = Date.now();
 function onRebuild() {
   if (process.env.RESTART_KEY && Date.now() - lastRebuild > 150) {
     lastRebuild = Date.now();
-    fetch(`http://127.0.0.1:4689/rr?resource=${__dirname.split(process.platform === 'win32' ? '\\' : '/').pop()}`, {
-      method: 'GET',
-    });
+    fetch(
+      `http://127.0.0.1:4689/rr?resource=${__dirname.split(process.platform === 'win32' ? '\\' : '/').pop()}`,
+      {
+        method: 'GET',
+      },
+    );
   }
 }
 
@@ -24,7 +27,7 @@ const runServer = async () => {
       {
         name: 'rebuild-notify',
         setup(build) {
-          build.onEnd((result) => {
+          build.onEnd(result => {
             if (result.errors.length > 0) {
               console.log(`Server build ended with ${result.errors.length} errors`);
               for (i = 0; i < result.errors.length; i++) {

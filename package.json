@@ -1,12 +1,22 @@
 {
   "name": "prisma",
+  "description": "JavaScript/TypeScript tool to use Prisma within FiveM",
+  "author": "arlofonseca",
+  "license": "MIT",
   "type": "module",
+  "version": "1.0.1",
   "scripts": {
     "pull": "pnpm prisma db pull",
     "generate": "pnpm prisma generate",
     "build": "node build.prod.js",
-    "watch": "node build.dev.js"
+    "watch": "node build.dev.js",
+    "format": "prettier --write ."
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/arlofonseca/prisma.git"
+  },
+  "bugs": "https://github.com/arlofonseca/prisma/issues",
   "dependencies": {
     "@nativewrappers/fivem": "^0.0.42",
     "@overextended/ox_core": "^1.0.1",
@@ -19,6 +29,7 @@
     "esbuild": "^0.24.0",
     "esbuild-plugin-fileloc": "^0.0.6",
     "node-fetch": "^3.3.2",
+    "prettier": "^3.3.3",
     "prisma": "^5.21.1"
   },
   "engines": {
