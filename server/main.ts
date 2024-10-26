@@ -1,17 +1,17 @@
 import * as Cfx from '@nativewrappers/fivem/server';
-import { GetPlayer } from '@overextended/ox_core/server';
+import { GetPlayer, OxPlayer } from '@overextended/ox_core/server';
 import { addCommand } from '@overextended/ox_lib/server';
 import db from '../@types/DB';
 
 addCommand(
   ['fetchusers'],
   async (source: number): Promise<void> => {
-    const player = GetPlayer(source);
+    const player: OxPlayer | undefined = GetPlayer(source);
 
     if (!player?.charId) return;
 
     try {
-      const data = await db.fetchAllUsers();
+      const data = await db.getManyUsers();
       exports.chat.addMessage(source, '^#5e81ac--------- ^#ffffffUser Data ^#5e81ac---------');
       for (const user of data) {
         exports.chat.addMessage(
@@ -35,7 +35,7 @@ addCommand(
 addCommand(
   ['viewchar'],
   async (source: number, args: { stateId: string }): Promise<void> => {
-    const player = GetPlayer(source);
+    const player: OxPlayer | undefined = GetPlayer(source);
 
     if (!player?.charId) return;
 
@@ -84,7 +84,7 @@ addCommand(
     source: number,
     args: { stateId: string; firstName: string; lastName: string },
   ): Promise<void> => {
-    const player = GetPlayer(source);
+    const player: OxPlayer | undefined = GetPlayer(source);
 
     if (!player?.charId) return;
 
@@ -97,7 +97,7 @@ addCommand(
       if (!character) {
         exports.chat.addMessage(
           source,
-          `^#d73232ERROR ^#ffffffCharacter with ID ${stateId} does not exist.`,
+          `^#d73232ERROR ^#ffffffCharacter with state id ${stateId} does not exist.`,
         );
         return;
       }
@@ -139,12 +139,12 @@ addCommand(
 addCommand(
   ['countchars'],
   async (source: number): Promise<void> => {
-    const player = GetPlayer(source);
+    const player: OxPlayer | undefined = GetPlayer(source);
 
     if (!player?.charId) return;
 
     try {
-      const count: number = await db.fetchCharacterCount();
+      const count: number = await db.getCharacterCount();
       exports.chat.addMessage(
         source,
         `^#5e81ac[INFO] ^#ffffffThere are currently ^#5e81ac${count} ^#ffffffcharacters in the database.`,
@@ -164,12 +164,12 @@ addCommand(
 
 addCommand(
   ['deleteinactivechars'],
-  async (source: number, args: { limit?: string }): Promise<void> => {
-    const player = GetPlayer(source);
+  async (source: number, args: { limit?: number }): Promise<void> => {
+    const player: OxPlayer | undefined = GetPlayer(source);
 
     if (!player?.charId) return;
 
-    const limit: number = args.limit ? parseInt(args.limit) : 30;
+    const limit: number = args.limit ?? 30;
 
     if (isNaN(limit) || limit <= 0) return;
 
@@ -178,7 +178,7 @@ addCommand(
       if (count === 0) {
         exports.chat.addMessage(
           source,
-          `^#5e81ac[ADMIN] ^#ffffffNo inactive characters were found for deletion.`,
+          `^#d73232ERROR ^#ffffffNo inactive characters were found for deletion.`,
         );
       } else {
         exports.chat.addMessage(
@@ -198,7 +198,7 @@ addCommand(
     params: [
       {
         name: 'limit',
-        paramType: 'string',
+        paramType: 'number',
         optional: true, // Default 30 days if no limit is provided, can leave as optional.
       },
     ],
@@ -209,7 +209,7 @@ addCommand(
 addCommand(
   ['searchchar'],
   async (source: number, args: { firstName: string }): Promise<void> => {
-    const player = GetPlayer(source);
+    const player: OxPlayer | undefined = GetPlayer(source);
 
     if (!player?.charId) return;
 
@@ -220,7 +220,7 @@ addCommand(
       if (characters.length === 0) {
         exports.chat.addMessage(
           source,
-          `^#d73232ERROR ^#ffffffCharacter with the name ${firstName} does not exist.`,
+          `^#d73232ERROR ^#ffffffCharacter with name ${firstName} does not exist.`,
         );
         return;
       }
@@ -258,12 +258,12 @@ addCommand(
 addCommand(
   ['charbygender'],
   async (source: number): Promise<void> => {
-    const player = GetPlayer(source);
+    const player: OxPlayer | undefined = GetPlayer(source);
 
     if (!player?.charId) return;
 
     try {
-      const data = await db.groupCharactersByGender();
+      const data = await db.getCharactersByGender();
 
       if (data.length === 0) return;
 

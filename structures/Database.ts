@@ -7,7 +7,7 @@ export class Database {
     this.prisma = new PrismaClient();
   }
 
-  fetchAllUsers(): Promise<users[]> {
+  getManyUsers(): Promise<users[]> {
     return this.prisma.users.findMany();
   }
 
@@ -21,7 +21,7 @@ export class Database {
     });
   }
 
-  fetchCharacterCount(): Promise<number> {
+  getCharacterCount(): Promise<number> {
     return this.prisma.characters.count();
   }
 
@@ -29,14 +29,7 @@ export class Database {
     return this.prisma.characters.findUnique({ where: { stateId } });
   }
 
-  updateCharacterName(stateId: string, firstName: string, lastName: string): Promise<characters | null> {
-    return this.prisma.characters.update({
-      where: { stateId },
-      data: { firstName, lastName },
-    });
-  }
-
-  async groupCharactersByGender(): Promise<Array<{ gender: string; count: number }>> {
+  async getCharactersByGender(): Promise<Array<{ gender: string; count: number }>> {
     const result = await this.prisma.characters.groupBy({
       by: ['gender'],
       _count: {
@@ -44,10 +37,17 @@ export class Database {
       },
     });
 
-    return result.map((group: { gender: string; _count: { _all: number; }; }) => ({
+    return result.map((group: { gender: string; _count: { _all: number } }) => ({
       gender: group.gender,
       count: group._count._all,
     }));
+  }
+
+  updateCharacterName(stateId: string, firstName: string, lastName: string): Promise<characters | null> {
+    return this.prisma.characters.update({
+      where: { stateId },
+      data: { firstName, lastName },
+    });
   }
 
   async deleteInactiveCharacters(limit: number): Promise<number> {
