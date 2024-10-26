@@ -23,6 +23,8 @@
 
 ## Installation
 
+##### _This system is designed based on the database structure of [ox_core](https://github.com/overextended/ox_core) and strictly serves as a demonstration of how to use Prisma ORM within FiveM._
+
 ### Building this resource
 
 1. Download and install the LTS version of Node.js.
