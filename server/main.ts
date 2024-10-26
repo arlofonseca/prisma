@@ -170,10 +170,8 @@ addCommand(
     if (!player?.charId) return;
 
     const limit: number = args.limit ? parseInt(args.limit) : 30;
-    if (isNaN(limit) || limit <= 0) {
-      exports.chat.addMessage(source, '^#d73232ERROR ^#ffffffInvalid number of days specified.');
-      return;
-    }
+
+    if (isNaN(limit) || limit <= 0) return;
 
     try {
       const count: number = await db.deleteInactiveCharacters(limit);
@@ -222,7 +220,7 @@ addCommand(
       if (characters.length === 0) {
         exports.chat.addMessage(
           source,
-          `^#d73232ERROR ^#ffffffNo characters found with first name ${firstName}`,
+          `^#d73232ERROR ^#ffffffCharacter with the name ${firstName} does not exist.`,
         );
         return;
       }
@@ -257,6 +255,42 @@ addCommand(
   },
 );
 
+addCommand(
+  ['charbygender'],
+  async (source: number): Promise<void> => {
+    const player = GetPlayer(source);
+
+    if (!player?.charId) return;
+
+    try {
+      const data = await db.groupCharactersByGender();
+
+      if (data.length === 0) return;
+
+      exports.chat.addMessage(
+        source,
+        '^#5e81ac--------- ^#ffffffCharacters by Gender ^#5e81ac---------',
+      );
+
+      for (const group of data) {
+        exports.chat.addMessage(
+          source,
+          `Gender: ^#5e81ac${group.gender ?? 'Unknown'} ^#ffffff| Count: ^#5e81ac${group.count}`,
+        );
+      }
+    } catch (error) {
+      console.error('/charbygender:', error);
+      exports.chat.addMessage(
+        source,
+        '^#d73232ERROR ^#ffffffAn error occurred while grouping characters by gender.',
+      );
+    }
+  },
+  {
+    restricted: 'group.admin',
+  },
+);
+
 on('onResourceStart', async (resourceName: string): Promise<void> => {
   if (resourceName !== 'prisma') return;
 
@@ -264,9 +298,9 @@ on('onResourceStart', async (resourceName: string): Promise<void> => {
 
   try {
     await db.connect();
-    console.log('[PRISMA] Successfully connected to database!');
+    console.log(`\x1b[32m[PRISMA] Successfully connected to database!\x1b[0m`);
   } catch (error) {
-    console.error('[PRISMA] Failed to connect to database:', error);
+    console.error(`'\x1b[31m[PRISMA] Failed to connect to database: ${error}\x1b[0m`);
   } finally {
     await db.disconnect();
   }
