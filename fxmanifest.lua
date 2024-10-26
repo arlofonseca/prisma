@@ -3,8 +3,8 @@ game 'gta5'
 
 name 'prisma'
 author 'arlofonseca'
-description 'JavaScript/TypeScript tool to use Prisma within FiveM'
-version '1.0.1'
+description 'JavaScript/TypeScript tool containing tests to use Prisma ORM within FiveM'
+version '1.0.2'
 repository 'https://github.com/arlofonseca/prisma'
 license 'MIT'
 

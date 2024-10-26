@@ -1,14 +1,14 @@
 {
   "name": "prisma",
-  "description": "JavaScript/TypeScript tool to use Prisma within FiveM",
+  "description": "JavaScript/TypeScript tool containing tests to use Prisma ORM within FiveM",
   "author": "arlofonseca",
   "license": "MIT",
   "type": "module",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "scripts": {
-    "pull": "prisma db pull",
-    "generate": "prisma generate",
-    "studio": "prisma studio",
+    "pull": "npx prisma db pull",
+    "generate": "npx prisma generate",
+    "studio": "npx prisma studio",
     "build": "node build.prod.js",
     "watch": "node build.dev.js",
     "format": "prettier --write ."
