@@ -19,7 +19,7 @@ async function development() {
   }
 
   const ctx = await context({
-    entryPoints: ['./server/main.ts'],
+    entryPoints: ['./src/server/main.ts'],
     outfile: './dist/server/main.js',
     platform: 'node',
     target: 'es2020',
@@ -48,7 +48,7 @@ async function development() {
 
 function production() {
   build({
-    entryPoints: ['./server/main.ts'],
+    entryPoints: ['./src/server/main.ts'],
     outfile: './dist/server/main.js',
     platform: 'node',
     target: 'es2020',
