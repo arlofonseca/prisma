@@ -10,34 +10,16 @@
 </p>
 
 <p align="center">
-	<h2 align="center"><a href="https://www.prisma.io/docs/orm/reference/prisma-client-reference">Documentation</a></h2>
+	<h2 align="center"><a href="https://www.prisma.io/docs/orm/overview/introduction/what-is-prisma">Documentation</a></h2>
 </p>
 
 ## Features
 
-- Database management through class object (e.g., `Prisma`).
+- Database management through class objects (e.g., `Prisma`):
+   - Provides access to [Prisma Studio](https://www.prisma.io/studio) for a web-based interface.
 - Prisma generates types based on your database schema for compile-time checks.
-- Perform queries without writing raw SQL.
-- Access to Prisma Studio for a web-based database interface.
+- Perform queries without writing raw SQL:
+   - Raw queries are still supported using [TypedSQL](https://www.prisma.io/docs/orm/prisma-client/using-raw-sql/typedsql).
 - Supports various databases (e.g., PostgreSQL, MySQL, and MariaDB).
 
-## Installation
-
-##### _This system is designed based on the database structure of [ox_core](https://github.com/overextended/ox_core) and strictly serves as a demonstration of how to use Prisma ORM within FiveM._
-
-### Building this resource
-
-1. Download and install the LTS version of Node.js.
-2. Open a command-line terminal (e.g., Terminal, Command Prompt).
-3. Enter `node --version` to verify the installation.
-4. Run `npm install -g pnpm` to globally install the package.
-5. Download or clone the repository with `git clone https://github.com/arlofonseca/prisma`.
-6. Install all dependencies with `pnpm i`.
-7. Create a new file named `.env`.
-8. Copy the contents of `.env.example` to the newly created `.env` file and edit accordingly:
-   - `DATABASE_URL` is the URL for your database.
-9. Run `pnpm pull` to connect to your database.
-10. Now run the command `pnpm generate`.
-11. Build the resource with `pnpm build`.
-
-Use `pnpm watch` to rebuild whenever a file is modified.
+##### _This is a development tool that was created using [ox_core](https://github.com/overextended/ox_core) database structure and is intended solely as a demonstration of how to utilize Prisma ORM for interacting with your database in FiveM._
