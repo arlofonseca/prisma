@@ -10,8 +10,6 @@ To get setup for development, please refer to [DEVELOPMENT.md](./DEVELOPMENT.md)
 
 GitHub Issues is used to track bugs and feature requests. When submitting a bug report, please provide a clear description with detailed steps to reproduce the issue.
 
-Additionally, if possible, include an example resource that demonstrates any features involving Prisma ORM.
-
 ### Pull Requests
 
 All active development for this project occurs on this GitHub repository. You can visit the [pull request](https://help.github.com/articles/creating-a-pull-request) documentation for more information.

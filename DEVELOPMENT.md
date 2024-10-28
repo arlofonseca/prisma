@@ -18,7 +18,7 @@ npm install -g pnpm
 
 5. Create your own fork of this repository via the `Fork` button.
 
-6. Check out your fork:
+6. View your fork:
 
 ```
 git clone git@github.com:username/prisma.git
@@ -38,19 +38,21 @@ pnpm i
 nvim .env
 ```
 
-9. Copy the contents of `.env.example` to the newly created `.env` file and edit accordingly:
+9. Copy the contents of `.env.example` to the newly created `.env` file and edit accordingly.
+
+Example:
 
 ```
-DATABASE_URL="mysql://user:password@host:3306/name"
+DATABASE_URL="mysql://user:password@host:port/name"
 ```
 
-10. Connect your database and add Prisma models to your Prisma schema:
+10. Connect your database to add Prisma models to `schema.prisma`:
 
 ```
 pnpm pull
 ```
 
-11. Generate all necessary assets:
+11. Generate Prisma client:
 
 ```
 pnpm generate
