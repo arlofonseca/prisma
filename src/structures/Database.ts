@@ -1,10 +1,11 @@
-import { characters, PrismaClient, users } from '@prisma/client';
+import { characters, users } from '@prisma/client';
+import client from '../@types/Client';
 
 export class Database {
-  prisma: PrismaClient;
+  prisma: typeof client;
 
   constructor() {
-    this.prisma = new PrismaClient();
+    this.prisma = client;
   }
 
   getManyUsers(): Promise<users[]> {
@@ -43,7 +44,11 @@ export class Database {
     }));
   }
 
-  updateCharacterName(stateId: string, firstName: string, lastName: string): Promise<characters | null> {
+  updateCharacterName(
+    stateId: string,
+    firstName: string,
+    lastName: string,
+  ): Promise<characters | null> {
     return this.prisma.characters.update({
       where: { stateId },
       data: { firstName, lastName },
