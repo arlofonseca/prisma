@@ -8,12 +8,14 @@
   "scripts": {
     "pull": "npx prisma db pull",
     "generate": "npx prisma generate",
-    "sql": "npx prisma generate --sql",
+    "generate:sql": "npx prisma generate --sql",
     "studio": "npx prisma studio",
     "build": "node build.js",
     "watch": "node build.js --watch",
-    "format": "prettier --write .",
-    "lint": "eslint . --ext ts,js"
+    "ci": "pnpm run lint && pnpm run build",
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "eslint --fix . --ext .ts",
+    "format": "prettier --write ."
   },
   "repository": {
     "type": "git",

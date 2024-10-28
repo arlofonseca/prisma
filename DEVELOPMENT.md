@@ -56,7 +56,7 @@ pnpm pull
 
 ```
 pnpm generate
-pnpm sql // Used for TypedSQL
+pnpm generate:sql // Used for TypedSQL
 ```
 
 12. Be sure that there are no errors and builds successfully:
