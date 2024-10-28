@@ -12,7 +12,8 @@
     "studio": "npx prisma studio",
     "build": "node build.js",
     "watch": "node build.js --watch",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "lint": "eslint . --ext ts,js"
   },
   "repository": {
     "type": "git",
@@ -28,8 +29,11 @@
   "devDependencies": {
     "@citizenfx/server": "latest",
     "@types/node": "^22.7.4",
+    "@typescript-eslint/eslint-plugin": "^6.18.1",
+    "@typescript-eslint/parser": "^6.18.1",
     "esbuild": "^0.24.0",
     "esbuild-plugin-fileloc": "^0.0.6",
+    "eslint": "^8.56.0",
     "node-fetch": "^3.3.2",
     "prettier": "^3.3.3",
     "prisma": "^5.21.1",
