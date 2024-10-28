@@ -1,23 +1,10 @@
 import { build, context } from 'esbuild';
 import pkg from 'esbuild-plugin-fileloc';
-import fetch from 'node-fetch';
 
 const { filelocPlugin } = pkg;
 const watch = process.argv.includes('--watch');
 
 async function development() {
-  let lastRebuild = Date.now();
-
-  function onRebuild() {
-    if (process.env.RESTART_KEY && Date.now() - lastRebuild > 150) {
-      lastRebuild = Date.now();
-      fetch(
-        `http://127.0.0.1:4689/rr?resource=${__dirname.split(process.platform === 'win32' ? '\\' : '/').pop()}`,
-        { method: 'GET' },
-      );
-    }
-  }
-
   const ctx = await context({
     entryPoints: ['./src/server/main.ts'],
     outfile: './dist/server/main.js',
@@ -26,6 +13,7 @@ async function development() {
     minify: false,
     bundle: true,
     plugins: [
+      filelocPlugin(),
       {
         name: 'dev',
         setup(build) {
@@ -34,7 +22,6 @@ async function development() {
               console.log(`Server build ended with ${result.errors.length} errors`);
               result.errors.forEach((error, i) => console.error(`Error ${i + 1}:`, error.text));
             } else {
-              onRebuild();
               console.log('Successfully built server (development)');
             }
           });
