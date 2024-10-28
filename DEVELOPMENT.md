@@ -32,13 +32,13 @@ pnpm i
 
 8. Create a new file named `.env`:
 
-##### _You can create the new file any way you prefer; this is simply the quickest approach for me._
+##### _You can create the new file any way you prefer; this is simply the quickest approach for me:_
 
 ```
 nvim .env
 ```
 
-9. Copy the contents of `.env.example` to the newly created `.env` file and edit accordingly.
+9. Copy the contents of `.env.example` to the newly created `.env` file and edit accordingly:
 
 Example:
 
@@ -59,10 +59,9 @@ pnpm generate
 pnpm generate:sql // Used for TypedSQL
 ```
 
-12. Be sure that there are no errors and builds successfully:
+12. Build the resource:
 
 ```
-pnpm lint
 pnpm build
 ```
 
