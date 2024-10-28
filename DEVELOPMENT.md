@@ -56,16 +56,18 @@ pnpm pull
 
 ```
 pnpm generate
+pnpm sql // Used for TypedSQL
 ```
 
-12. Build the resource:
+12. Be sure that there are no errors and builds successfully:
 
 ```
+pnpm lint
 pnpm build
 ```
 
 ### Useful Commands
 
-4. `pnpm studio` - database management via web
-5. `pnpm watch` - rebuilds resource whenever a file is modified
-6. `pnpm format` - autoformats using prettier
+1. `pnpm studio` - database management via web
+2. `pnpm watch` - rebuilds resource whenever a file is modified
+3. `pnpm format` - autoformats using prettier
