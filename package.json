@@ -8,6 +8,7 @@
   "scripts": {
     "pull": "npx prisma db pull",
     "generate": "npx prisma generate",
+    "sql": "npx prisma generate --sql",
     "studio": "npx prisma studio",
     "build": "node build.js",
     "watch": "node build.js --watch",

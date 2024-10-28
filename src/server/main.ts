@@ -1,6 +1,8 @@
 import * as Cfx from '@nativewrappers/fivem/server';
 import { GetPlayer, OxPlayer } from '@overextended/ox_core/server';
 import { addCommand } from '@overextended/ox_lib/server';
+import { searchCharacters } from '@prisma/client/sql';
+import client from '../@types/Client';
 import db from '../@types/DB';
 
 addCommand(
@@ -205,6 +207,33 @@ addCommand(
     restricted: 'group.admin',
   },
 );
+
+// TypedSQL example
+addCommand(['fetchcharacternames'], async (source: number): Promise<void> => {
+  const player: OxPlayer | undefined = GetPlayer(source);
+
+  if (!player?.charId) return;
+
+  try {
+    const characters = await client.$queryRawTyped(searchCharacters());
+
+    if (characters.length === 0) return;
+
+    exports.chat.addMessage(source, '^#5e81ac--------- ^#ffffffCharacter Names ^#5e81ac---------');
+    for (const character of characters) {
+      exports.chat.addMessage(
+        source,
+        `^#5e81ac${character.firstName ?? 'N/A'} ${character.lastName ?? 'N/A'} ^#ffffff| DOB: ^#5e81ac${character.dateOfBirth ?? 'N/A'} ^#ffffff| Gender: ^#5e81ac${character.gender ?? 'N/A'}`,
+      );
+    }
+  } catch (error) {
+    console.error('/fetchcharacternames:', error);
+    exports.chat.addMessage(
+      source,
+      '^#d73232ERROR ^#ffffffAn error occurred while fetching character names.',
+    );
+  }
+});
 
 addCommand(
   ['searchchar'],
