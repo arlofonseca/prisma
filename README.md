@@ -15,11 +15,10 @@
 
 ## Features
 
-- Database management through class objects (e.g., `Prisma`):
-   - Provides access to [Prisma Studio](https://www.prisma.io/studio) for a web-based interface.
-- Prisma generates types based on your database schema for compile-time checks.
-- Perform queries without writing raw SQL:
-   - Write fully type-safe SQL using [TypedSQL](https://www.prisma.io/docs/orm/prisma-client/using-raw-sql/typedsql).
-- Supports various databases (e.g., PostgreSQL, MySQL, and MariaDB).
+- Database management through class objects (e.g., `Prisma`).
+- Access to a web-based interface via [Prisma Studio](https://www.prisma.io/studio) for easy database workflow management.
+- Generates types based on your database schema for compile-time checks.
+- Perform queries without writing raw SQL (e.g., use fully type-safe SQL with [TypedSQL](https://www.prisma.io/docs/orm/prisma-client/using-raw-sql/typedsql)).
+- Supports various databases (e.g., PostgreSQL, MySQL, MariaDB).
 
-##### _This is a development tool that was created using [ox_core](https://github.com/overextended/ox_core) database structure and is intended solely as a demonstration of how to utilize Prisma ORM for interacting with your database in FiveM._
+##### _Prisma is an ORM for Node.js and TypeScript that serves as an alternative to writing plain SQL or using other database access tools (e.g., Knex or Sequelize). It simplifies database access and management by providing a type-safe query builder and auto-generator. This is a development tool that was created using [ox_core](https://github.com/overextended/ox_core) database structure and is intended solely as a demonstration of how to utilize Prisma to interact with your database on FiveM._
