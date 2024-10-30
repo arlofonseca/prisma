@@ -1,11 +1,10 @@
-import { characters, users } from '@prisma/client';
-import client from '../@types/Client';
+import { characters, PrismaClient, users } from '@prisma/client';
 
 export class Database {
-  prisma: typeof client;
+  prisma: PrismaClient;
 
   constructor() {
-    this.prisma = client;
+    this.prisma = new PrismaClient();
   }
 
   getManyUsers(): Promise<users[]> {
@@ -68,6 +67,10 @@ export class Database {
     });
 
     return result.count;
+  }
+
+  async rawQuery<T>(module: string): Promise<T> {
+    return this.prisma.$queryRawTyped(module);
   }
 
   connect(): Promise<void> {

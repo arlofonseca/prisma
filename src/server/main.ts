@@ -3,7 +3,6 @@ import { GetPlayer, OxPlayer } from '@overextended/ox_core/server';
 import { cache } from '@overextended/ox_lib';
 import { addCommand } from '@overextended/ox_lib/server';
 import { searchCharacters } from '@prisma/client/sql';
-import client from '../@types/Client';
 import db from '../@types/DB';
 
 addCommand(
@@ -216,7 +215,7 @@ addCommand(['fetchcharacternames'], async (source: number): Promise<void> => {
   if (!player?.charId) return;
 
   try {
-    const characters = await client.$queryRawTyped(searchCharacters());
+    const characters = await db.rawQuery(searchCharacters());
 
     if (characters.length === 0) return;
 
