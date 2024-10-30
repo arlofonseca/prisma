@@ -12,6 +12,25 @@ export class Database {
     return this.prisma.users.findMany();
   }
 
+  getCharacterCount(): Promise<number> {
+    return this.prisma.characters.count();
+  }
+
+  getCharacterByStateId(stateId: string): Promise<characters | null> {
+    return this.prisma.characters.findUnique({ where: { stateId } });
+  }
+
+  updateCharacterName(
+    stateId: string,
+    firstName: string,
+    lastName: string,
+  ): Promise<characters | null> {
+    return this.prisma.characters.update({
+      where: { stateId },
+      data: { firstName, lastName },
+    });
+  }
+
   async getCharacterByFirstName(firstName: string): Promise<characters[]> {
     return this.prisma.characters.findMany({
       where: {
@@ -20,14 +39,6 @@ export class Database {
         },
       },
     });
-  }
-
-  getCharacterCount(): Promise<number> {
-    return this.prisma.characters.count();
-  }
-
-  getCharacterByStateId(stateId: string): Promise<characters | null> {
-    return this.prisma.characters.findUnique({ where: { stateId } });
   }
 
   async getCharactersByGender(): Promise<Array<{ gender: string; count: number }>> {
@@ -42,17 +53,6 @@ export class Database {
       gender: group.gender,
       count: group._count._all,
     }));
-  }
-
-  updateCharacterName(
-    stateId: string,
-    firstName: string,
-    lastName: string,
-  ): Promise<characters | null> {
-    return this.prisma.characters.update({
-      where: { stateId },
-      data: { firstName, lastName },
-    });
   }
 
   async deleteInactiveCharacters(limit: number): Promise<number> {

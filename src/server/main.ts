@@ -1,5 +1,6 @@
 import * as Cfx from '@nativewrappers/fivem/server';
 import { GetPlayer, OxPlayer } from '@overextended/ox_core/server';
+import { cache } from '@overextended/ox_lib';
 import { addCommand } from '@overextended/ox_lib/server';
 import { searchCharacters } from '@prisma/client/sql';
 import client from '../@types/Client';
@@ -327,9 +328,9 @@ on('onResourceStart', async (resourceName: string): Promise<void> => {
 
   try {
     await db.connect();
-    console.log(`\x1b[32m[PRISMA] Successfully connected to database!\x1b[0m`);
+    console.log(`\x1b[32m[${cache.resource}] Successfully connected to database!\x1b[0m`);
   } catch (error) {
-    console.error(`'\x1b[31m[PRISMA] Failed to connect to database: ${error}\x1b[0m`);
+    console.error(`\x1b[31m[${cache.resource}] Failed to connect to database: ${error}\x1b[0m`);
   } finally {
     await db.disconnect();
   }
