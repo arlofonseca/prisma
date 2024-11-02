@@ -6,12 +6,12 @@ const watch = process.argv.includes('--watch');
 
 async function development() {
   const ctx = await context({
-    entryPoints: ['./src/server/index.ts'],
+    entryPoints: ['./src/server/main.ts'],
     outfile: './dist/server/main.js',
     platform: 'node',
-    target: 'es2020',
-    minify: false,
+    target: 'ES2022',
     bundle: true,
+    minify: false,
     plugins: [
       filelocPlugin(),
       {
@@ -35,12 +35,12 @@ async function development() {
 
 function production() {
   build({
-    entryPoints: ['./src/server/index.ts'],
+    entryPoints: ['./src/server/main.ts'],
     outfile: './dist/server/main.js',
     platform: 'node',
-    target: 'es2020',
+    target: 'ES2022',
     bundle: true,
-    minify: true,
+    minify: false,
     plugins: [filelocPlugin()],
   })
     .then(() => {
