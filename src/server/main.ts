@@ -2,6 +2,7 @@ import * as Cfx from '@nativewrappers/fivem/server';
 import { GetPlayer, OxPlayer } from '@overextended/ox_core/server';
 import { cache } from '@overextended/ox_lib';
 import { addCommand } from '@overextended/ox_lib/server';
+import { characters, users } from '@prisma/client';
 import { searchCharacters } from '@prisma/client/sql';
 import db from '../@types/DB';
 
@@ -10,7 +11,7 @@ addCommand(['fetchusers'], async (source: number): Promise<void> => {
   if (!player?.charId) return;
 
   try {
-    const data = await db.getManyUsers();
+    const data: users[] = await db.getManyUsers();
     exports.chat.addMessage(source, '^#5e81ac--------- ^#ffffffUser Data ^#5e81ac---------');
     for (const user of data) {
       exports.chat.addMessage(source, `User ID: ^#5e81ac${user.userId} ^#ffffff| Username: ^#5e81ac${user.username ?? 'N/A'} ^#ffffff| License2: ^#5e81ac${user.license2} ^#ffffff| Steam: ^#5e81ac${user.steam ?? 'N/A'} ^#ffffff| FiveM: ^#5e81ac${user.fivem ?? 'N/A'} ^#ffffff| Discord: ^#5e81ac${user.discord ?? 'N/A'}`);
@@ -30,7 +31,7 @@ addCommand(['viewchar'], async (source: number, args: { stateId: string }): Prom
   const stateId: string = args.stateId;
 
   try {
-    const character = await db.getCharacterByStateId(stateId);
+    const character: characters = await db.getCharacterByStateId(stateId);
     if (!character) {
       exports.chat.addMessage(source, `^#d73232ERROR ^#ffffffCharacter with ID ${stateId} does not exist.`);
       return;
@@ -62,7 +63,7 @@ addCommand(['updatechar'], async (source: number, args: { stateId: string; first
   const lastName: string = args.lastName;
 
   try {
-    const character = await db.updateCharacterName(stateId, firstName, lastName);
+    const character: characters[] = await db.updateCharacterName(stateId, firstName, lastName);
     if (!character) {
       exports.chat.addMessage(source, `^#d73232ERROR ^#ffffffCharacter with state id ${stateId} does not exist.`);
       return;
@@ -145,7 +146,7 @@ addCommand(['fetchcharacternames'], async (source: number): Promise<void> => {
   if (!player?.charId) return;
 
   try {
-    const characters = await db.rawQuery(searchCharacters());
+    const characters: characters[] = await db.rawQuery<characters[]>(searchCharacters() as any);
     if (characters.length === 0) return;
 
     exports.chat.addMessage(source, '^#5e81ac--------- ^#ffffffCharacter Names ^#5e81ac---------');
@@ -165,7 +166,7 @@ addCommand(['searchchar'], async (source: number, args: { firstName: string }): 
   const firstName: string = args.firstName;
 
   try {
-    const characters = await db.getCharacterByFirstName(firstName);
+    const characters: characters[] = await db.getCharacterByFirstName(firstName);
     if (characters.length === 0) {
       exports.chat.addMessage(source, `^#d73232ERROR ^#ffffffCharacter with name ${firstName} does not exist.`);
       return;

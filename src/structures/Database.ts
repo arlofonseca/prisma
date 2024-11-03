@@ -1,4 +1,5 @@
 import { characters, PrismaClient, users } from '@prisma/client';
+import { TypedSql } from '@prisma/client/runtime/library';
 
 export class Database {
   prisma: PrismaClient;
@@ -69,8 +70,8 @@ export class Database {
     return result.count;
   }
 
-  async rawQuery<T>(module: string): Promise<T> {
-    return this.prisma.$queryRawTyped(module);
+  async rawQuery<T>(module: TypedSql<unknown[], T>) {
+    return this.prisma.$queryRawTyped<T>(module as any);
   }
 
   connect(): Promise<void> {
