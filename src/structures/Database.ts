@@ -1,32 +1,16 @@
-import { characters, PrismaClient, users } from '@prisma/client';
+import { characters, PrismaClient } from '@prisma/client';
 import { TypedSql } from '@prisma/client/runtime/library';
 
-export class Database {
+class Database {
   prisma: PrismaClient;
 
   constructor() {
     this.prisma = new PrismaClient();
   }
 
-  getManyUsers(): Promise<users[]> {
-    return this.prisma.users.findMany();
-  }
-
-  getCharacterCount(): Promise<number> {
-    return this.prisma.characters.count();
-  }
-
-  getCharacterByStateId(stateId: string): Promise<characters | null> {
-    return this.prisma.characters.findUnique({ where: { stateId } });
-  }
-
-  updateCharacterName(
-    stateId: string,
-    firstName: string,
-    lastName: string,
-  ): Promise<characters | null> {
+  updateCharacterName(charId: number, firstName: string, lastName: string): Promise<characters | null> {
     return this.prisma.characters.update({
-      where: { stateId },
+      where: { charId },
       data: { firstName, lastName },
     });
   }
@@ -39,20 +23,6 @@ export class Database {
         },
       },
     });
-  }
-
-  async getCharactersByGender(): Promise<Array<{ gender: string; count: number }>> {
-    const result = await this.prisma.characters.groupBy({
-      by: ['gender'],
-      _count: {
-        _all: true,
-      },
-    });
-
-    return result.map((group: { gender: string; _count: { _all: number } }) => ({
-      gender: group.gender,
-      count: group._count._all,
-    }));
   }
 
   async deleteInactiveCharacters(limit: number): Promise<number> {
@@ -82,3 +52,7 @@ export class Database {
     return this.prisma.$disconnect();
   }
 }
+
+const db: Database = new Database();
+
+export default db;
