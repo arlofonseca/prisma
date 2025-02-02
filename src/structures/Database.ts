@@ -8,7 +8,7 @@ class Database {
     this.prisma = new PrismaClient();
   }
 
-  updateCharacterName(charId: number, firstName: string, lastName: string ): Promise<characters | null> {
+  updateCharacterName(charId: number, firstName: string, lastName: string): Promise<characters | null> {
     return this.prisma.characters.update({ where: { charId }, data: { firstName, lastName } });
   }
 
