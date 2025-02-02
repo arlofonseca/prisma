@@ -1,10 +1,10 @@
 {
   "name": "prisma",
-  "description": "JavaScript/TypeScript tool containing tests to use Prisma ORM within FiveM",
+  "description": "JavaScript/TypeScript tool containing examples of how to use Prisma ORM for FiveM",
   "author": "arlofonseca",
   "license": "MIT",
   "type": "module",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "scripts": {
     "pull": "npx prisma db pull",
     "generate": "npx prisma generate",
@@ -23,17 +23,17 @@
   "bugs": "https://github.com/arlofonseca/prisma/issues",
   "dependencies": {
     "@nativewrappers/fivem": "^0.0.42",
-    "@overextended/ox_core": "^1.0.1",
+    "@overextended/ox_core": "latest",
     "@overextended/ox_lib": "latest",
-    "@prisma/client": "^5.21.1"
+    "@prisma/client": "^6.3.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.9.4",
     "@citizenfx/server": "latest",
-    "@types/node": "^22.7.4",
+    "@types/node": "^22.8.4",
     "esbuild": "^0.24.0",
     "esbuild-plugin-fileloc": "^0.0.6",
-    "prisma": "^5.21.1",
+    "prisma": "^6.3.0",
     "typescript": "^5.6.3"
   }
 }
