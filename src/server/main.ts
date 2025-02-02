@@ -1,12 +1,12 @@
-import * as Cfx from '@nativewrappers/fivem/server';
-import { GetPlayer } from '@overextended/ox_core/server';
-import { cache } from '@overextended/ox_lib';
-import { addCommand } from '@overextended/ox_lib/server';
-import { characters } from '@prisma/client';
-import { searchCharacters } from '@prisma/client/sql';
-import db from '../structures/Database';
+import * as Cfx from "@nativewrappers/fivem/server";
+import { GetPlayer } from "@overextended/ox_core/server";
+import { cache } from "@overextended/ox_lib";
+import { addCommand } from "@overextended/ox_lib/server";
+import { characters } from "@prisma/client";
+import { searchCharacters } from "@prisma/client/sql";
+import db from "../structures/Database";
 
-addCommand(['lookup'], async (source: number, args: { playerId: number }): Promise<void> => {
+addCommand(["lookup"], async (source: number, args: { playerId: number }): Promise<void> => {
   const player = GetPlayer(source);
 
   if (!player?.charId) return;
@@ -20,23 +20,23 @@ addCommand(['lookup'], async (source: number, args: { playerId: number }): Promi
       return;
     }
 
-    exports.chat.addMessage(source, `Name: ^#5e81ac${target.get('name')} ^#ffffff| State ID: ^#5e81ac${target.stateId}`);
+    exports.chat.addMessage(source, `Name: ^#5e81ac${target.get("name")} ^#ffffff| State ID: ^#5e81ac${target.stateId}`);
   } catch (error) {
-    console.error('/lookup:', error);
-    exports.chat.addMessage(source, '^#d73232ERROR ^#ffffffAn error occurred while trying to view character.');
+    console.error("/lookup:", error);
+    exports.chat.addMessage(source, "^#d73232ERROR ^#ffffffAn error occurred while trying to view character.");
   }
 }, {
   params: [
     {
-      name: 'playerId',
-      paramType: 'number',
+      name: "playerId",
+      paramType: "number",
       optional: false,
     },
   ],
   restricted: false,
 });
 
-addCommand(['changename'], async (source: number, args: { playerId: number; firstName: string; lastName: string }): Promise<void> => {
+addCommand(["changename"], async (source: number, args: { playerId: number; firstName: string; lastName: string }): Promise<void> => {
   const player = GetPlayer(source);
 
   if (!player?.charId) return;
@@ -53,33 +53,33 @@ addCommand(['changename'], async (source: number, args: { playerId: number; firs
     }
 
     await db.updateCharacterName(target.charId, firstName, lastName);
-    exports.chat.addMessage(source, `^#5e81acSuccessfully changed ^#ffffff${target.get('name')} ^#5e81acname to ^#ffffff${firstName} ${lastName}`);
+    exports.chat.addMessage(source, `^#5e81acSuccessfully changed ^#ffffff${target.get("name")} ^#5e81acname to ^#ffffff${firstName} ${lastName}`);
   } catch (error) {
-    console.error('/changename:', error);
-    exports.chat.addMessage(source, '^#d73232ERROR ^#ffffffAn error occurred while trying to update the name of the character.');
+    console.error("/changename:", error);
+    exports.chat.addMessage(source, "^#d73232ERROR ^#ffffffAn error occurred while trying to update the name of the character.");
   }
 }, {
   params: [
     {
-      name: 'playerId',
-      paramType: 'number',
+      name: "playerId",
+      paramType: "number",
       optional: false,
     },
     {
-      name: 'firstName',
-      paramType: 'string',
+      name: "firstName",
+      paramType: "string",
       optional: false,
     },
     {
-      name: 'lastName',
-      paramType: 'string',
+      name: "lastName",
+      paramType: "string",
       optional: false,
     },
   ],
-  restricted: 'group.admin',
+  restricted: "group.admin",
 });
 
-addCommand(['deleteinactivechars'], async (source: number, args: { limit?: number }): Promise<void> => {
+addCommand(["deleteinactivechars"], async (source: number, args: { limit?: number }): Promise<void> => {
   const player = GetPlayer(source);
 
   if (!player?.charId) return;
@@ -96,21 +96,21 @@ addCommand(['deleteinactivechars'], async (source: number, args: { limit?: numbe
 
     exports.chat.addMessage(source, `^#5e81ac[ADMIN] ^#ffffffDeleted ^#5e81ac${count} ^#ffffffinactive characters who haven't been active for more than ${limit} days.`);
   } catch (error) {
-    console.error('/deleteinactivechars:', error);
-    exports.chat.addMessage(source, '^#d73232ERROR ^#ffffffAn error occurred while trying to delete inactive characters.');
+    console.error("/deleteinactivechars:", error);
+    exports.chat.addMessage(source, "^#d73232ERROR ^#ffffffAn error occurred while trying to delete inactive characters.");
   }
 }, {
   params: [
     {
-      name: 'limit',
-      paramType: 'number',
+      name: "limit",
+      paramType: "number",
       optional: true, // Default 30 days if no limit is provided, can leave as optional.
     },
   ],
-  restricted: 'group.admin',
+  restricted: "group.admin",
 });
 
-addCommand(['searchchar'], async (source: number, args: { firstName: string }): Promise<void> => {
+addCommand(["searchchar"], async (source: number, args: { firstName: string }): Promise<void> => {
   const player = GetPlayer(source);
 
   if (!player?.charId) return;
@@ -124,28 +124,28 @@ addCommand(['searchchar'], async (source: number, args: { firstName: string }): 
       return;
     }
 
-    exports.chat.addMessage(source, '^#5e81ac--------- ^#ffffffCharacter Results ^#5e81ac---------');
+    exports.chat.addMessage(source, "^#5e81ac--------- ^#ffffffCharacter Results ^#5e81ac---------");
     for (const character of characters) {
       const name: string = character.lastName ? `${character.firstName} ${character.lastName}` : character.firstName;
       exports.chat.addMessage(source, `^#5e81ac${name}`);
     }
   } catch (error) {
-    console.error('/searchchar:', error);
-    exports.chat.addMessage(source, '^#d73232ERROR ^#ffffffAn error occurred while trying to search for characters.');
+    console.error("/searchchar:", error);
+    exports.chat.addMessage(source, "^#d73232ERROR ^#ffffffAn error occurred while trying to search for characters.");
   }
 }, {
   params: [
     {
-      name: 'firstName',
-      paramType: 'string',
+      name: "firstName",
+      paramType: "string",
       optional: false,
     },
   ],
-  restricted: 'group.admin',
+  restricted: "group.admin",
 });
 
 // TypedSQL example
-addCommand(['fetchcharacternames'], async (source: number): Promise<void> => {
+addCommand(["fetchcharacternames"], async (source: number): Promise<void> => {
   const player = GetPlayer(source);
 
   if (!player?.charId) return;
@@ -154,18 +154,18 @@ addCommand(['fetchcharacternames'], async (source: number): Promise<void> => {
     const characters: characters[] = await db.rawQuery<characters[]>(searchCharacters() as any);
     if (characters.length === 0) return;
 
-    exports.chat.addMessage(source, '^#5e81ac--------- ^#ffffffCharacter Names ^#5e81ac---------');
+    exports.chat.addMessage(source, "^#5e81ac--------- ^#ffffffCharacter Names ^#5e81ac---------");
     for (const character of characters) {
-      exports.chat.addMessage(source, `^#5e81ac${character.firstName ?? 'N/A'} ${character.lastName ?? 'N/A'} ^#ffffff| DOB: ^#5e81ac${character.dateOfBirth ?? 'N/A'} ^#ffffff| Gender: ^#5e81ac${character.gender ?? 'N/A'}`);
+      exports.chat.addMessage(source, `^#5e81ac${character.firstName ?? "N/A"} ${character.lastName ?? "N/A"} ^#ffffff| DOB: ^#5e81ac${character.dateOfBirth ?? "N/A"} ^#ffffff| Gender: ^#5e81ac${character.gender ?? "N/A"}`);
     }
   } catch (error) {
-    console.error('/fetchcharacternames:', error);
-    exports.chat.addMessage(source, '^#d73232ERROR ^#ffffffAn error occurred while fetching character names.');
+    console.error("/fetchcharacternames:", error);
+    exports.chat.addMessage(source, "^#d73232ERROR ^#ffffffAn error occurred while fetching character names.");
   }
 });
 
-on('onResourceStart', async (resourceName: string): Promise<void> => {
-  if (resourceName !== 'prisma') return;
+on("onResourceStart", async (resourceName: string): Promise<void> => {
+  if (resourceName !== "prisma") return;
 
   await Cfx.Delay(100);
 

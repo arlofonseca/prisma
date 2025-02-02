@@ -68,5 +68,5 @@ pnpm build
 ### Useful Commands
 
 1. `pnpm studio` - database management via web
-2. `pnpm watch` - rebuilds resource whenever a file is modified
-3. `pnpm format` - autoformats using prettier
+2. `pnpm watch` - rebuilds whenever a file is modified
+3. `pnpm biome-fix` - autoformats using biome
