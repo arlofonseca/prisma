@@ -1,19 +1,23 @@
 import { characters, PrismaClient } from "@prisma/client";
 import { TypedSql } from "@prisma/client/runtime/library";
 
-class Database {
+export class Database {
   prisma: PrismaClient;
 
   constructor() {
     this.prisma = new PrismaClient();
   }
 
-  updateCharacterName(charId: number, firstName: string, lastName: string): Promise<characters | null> {
-    return this.prisma.characters.update({ where: { charId }, data: { firstName, lastName } });
+  async getCharacterByCharId(charId: number): Promise<characters | null> {
+    return this.prisma.characters.findUnique({ where: { charId } });
   }
 
   async getCharacterByFirstName(firstName: string): Promise<characters[]> {
     return this.prisma.characters.findMany({ where: { firstName: { contains: firstName.toLowerCase() } } });
+  }
+
+  async updateCharacterName(charId: number, firstName: string, lastName: string): Promise<characters | null> {
+    return this.prisma.characters.update({ where: { charId }, data: { firstName, lastName } });
   }
 
   async deleteInactiveCharacters(limit: number): Promise<number> {
@@ -37,7 +41,3 @@ class Database {
     return this.prisma.$disconnect();
   }
 }
-
-const db: Database = new Database();
-
-export default db;
