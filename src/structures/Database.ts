@@ -8,14 +8,6 @@ export class Database {
     this.prisma = new PrismaClient();
   }
 
-  async getCharacterByCharId(charId: number): Promise<characters | null> {
-    return this.prisma.characters.findUnique({ where: { charId } });
-  }
-
-  async getCharacterByFirstName(firstName: string): Promise<characters[]> {
-    return this.prisma.characters.findMany({ where: { firstName: { contains: firstName.toLowerCase() } } });
-  }
-
   async updateCharacterName(charId: number, firstName: string, lastName: string): Promise<characters | null> {
     return this.prisma.characters.update({ where: { charId }, data: { firstName, lastName } });
   }
@@ -27,6 +19,14 @@ export class Database {
     const result = await this.prisma.characters.deleteMany({ where: { lastPlayed: { lt: date } } });
 
     return result.count;
+  }
+
+  async getCharacterByStateId(stateId: string): Promise<characters | null> {
+    return this.prisma.characters.findUnique({ where: { stateId } });
+  }
+
+  async getCharacterByFirstName(firstName: string): Promise<characters[]> {
+    return this.prisma.characters.findMany({ where: { firstName: { contains: firstName.toLowerCase() } } });
   }
 
   async rawQuery<T>(module: TypedSql<unknown[], T>) {

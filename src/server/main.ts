@@ -5,65 +5,8 @@ import { addCommand } from "@overextended/ox_lib/server";
 import { characters } from "@prisma/client";
 import { searchCharacters } from "@prisma/client/sql";
 import db from "../utils/database";
-import { sendChatMessage } from "../utils/misc";
 
 /* Functions */
-
-async function getChar(source: number, args: { charId: number }): Promise<void> {
-  const player = GetPlayer(source);
-
-  if (!player?.charId) return;
-
-  try {
-    const charId: number = args.charId;
-    if (isNaN(charId) || charId <= 0) {
-      sendChatMessage(source, `^#d73232ERROR ^#ffffffInvalid character ID.`);
-      return;
-    }
-
-    const character = await db.getCharacterByCharId(charId);
-    if (!character) {
-      sendChatMessage(source, `^#d73232ERROR ^#ffffffNo character found with ID ${charId}.`);
-      return;
-    }
-
-    sendChatMessage(source, "^#5e81ac--------- ^#ffffffCharacter Details ^#5e81ac---------");
-    sendChatMessage(source, `^#5e81acCharacter ID: ^#ffffff${character.charId}`);
-    sendChatMessage(source, `^#5e81acUser ID: ^#ffffff${character.userId}`);
-    sendChatMessage(source, `^#5e81acState ID: ^#ffffff${character.stateId}`);
-    sendChatMessage(source, `^#5e81acName: ^#ffffff${character.firstName} ${character.lastName ?? ""}`);
-    sendChatMessage(source, `^#5e81acDOB: ^#ffffff${character.dateOfBirth ?? "N/A"}`);
-    sendChatMessage(source, `^#5e81acGender: ^#ffffff${character.gender ?? "N/A"}`);
-    sendChatMessage(source, `^#5e81acLast Played: ^#ffffff${character.lastPlayed?.toLocaleString() ?? "N/A"}`);
-  } catch (error) {
-    console.error("getChar:", error);
-    sendChatMessage(source, "^#d73232ERROR ^#ffffffAn error occurred while fetching character details.");
-  }
-}
-
-async function searchChar(source: number, args: { firstName: string }): Promise<void> {
-  const player = GetPlayer(source);
-
-  if (!player?.charId) return;
-
-  try {
-    const firstName: string = args.firstName;
-
-    const characters = await db.getCharacterByFirstName(firstName);
-    if (characters.length === 0) {
-      sendChatMessage(source, `^#d73232ERROR ^#ffffffCharacter with name ${firstName} does not exist.`);
-      return;
-    }
-
-    sendChatMessage(source, "^#5e81ac--------- ^#ffffffCharacter Results ^#5e81ac---------");
-    for (const character of characters) {
-      sendChatMessage(source, `^#5e81ac${character.lastName ? `${character.firstName} ${character.lastName}` : character.firstName}`);
-    }
-  } catch (error) {
-    console.error("searchChar:", error);
-    sendChatMessage(source, "^#d73232ERROR ^#ffffffAn error occurred while trying to search for characters.");
-  }
-}
 
 async function changeName(source: number, args: { playerId: number; firstName: string; lastName: string }) {
   const player = GetPlayer(source);
@@ -71,21 +14,21 @@ async function changeName(source: number, args: { playerId: number; firstName: s
   if (!player?.charId) return;
 
   try {
-    const playerId: number = args.playerId;
-    const firstName: string = args.firstName;
-    const lastName: string = args.lastName;
+    const playerId = args.playerId;
+    const firstName = args.firstName;
+    const lastName = args.lastName;
 
     const target = GetPlayer(playerId);
     if (!target?.charId) {
-      sendChatMessage(source, `^#d73232ERROR ^#ffffffNo player found with id ${playerId}.`);
+      exports.chat.addMessage(source, `^#d73232ERROR ^#ffffffNo player found with id ${playerId}.`);
       return;
     }
 
     await db.updateCharacterName(target.charId, firstName, lastName);
-    sendChatMessage(source, `^#5e81acSuccessfully changed ^#ffffff${target.get("name")} ^#5e81acname to ^#ffffff${firstName} ${lastName}`);
+    exports.chat.addMessage(source, `^#5e81acSuccessfully changed ^#ffffff${target.get("name")} ^#5e81acname to ^#ffffff${firstName} ${lastName}`);
   } catch (error) {
     console.error("changeName:", error);
-    sendChatMessage(source, "^#d73232ERROR ^#ffffffAn error occurred while trying to update the name of the character.");
+    exports.chat.addMessage(source, "^#d73232ERROR ^#ffffffAn error occurred while trying to update the name of the character.");
   }
 }
 
@@ -95,19 +38,74 @@ async function deleteInactiveChars(source: number, args: { limit?: number }): Pr
   if (!player?.charId) return;
 
   try {
-    const limit: number = args.limit ?? 30;
+    const limit = args.limit ?? 30;
     if (isNaN(limit) || limit <= 0) return;
 
-    const count: number = await db.deleteInactiveCharacters(limit);
+    const count = await db.deleteInactiveCharacters(limit);
     if (count === 0) {
-      sendChatMessage(source, `^#d73232ERROR ^#ffffffNo inactive characters were found for deletion.`);
+      exports.chat.addMessage(source, `^#d73232ERROR ^#ffffffNo inactive characters were found for deletion.`);
       return;
     }
 
-    sendChatMessage(source, `^#5e81acSuccessfully deleted ^#ffffff${count} ^#5e81acfinactive characters who haven't been active for more than ^#ffffff${limit} ^#5e81acdays`);
+    exports.chat.addMessage(source, `^#5e81acSuccessfully deleted ^#ffffff${count} ^#5e81acfinactive characters who haven't been active for more than ^#ffffff${limit} ^#5e81acdays`);
   } catch (error) {
     console.error("deleteInactiveChars:", error);
-    sendChatMessage(source, "^#d73232ERROR ^#ffffffAn error occurred while trying to delete inactive characters.");
+    exports.chat.addMessage(source, "^#d73232ERROR ^#ffffffAn error occurred while trying to delete inactive characters.");
+  }
+}
+
+async function getChar(source: number, args: { stateId: string }): Promise<void> {
+  const player = GetPlayer(source);
+
+  if (!player?.charId) return;
+
+  try {
+    const stateId = args.stateId;
+    if (typeof stateId !== "string" || !isNaN(Number(stateId))) {
+      exports.chat.addMessage(source, "^#d73232ERROR ^#ffffffInvalid State ID provided.");
+      return;
+    }
+
+    const character = await db.getCharacterByStateId(stateId);
+    if (!character) {
+      exports.chat.addMessage(source, `^#d73232ERROR ^#ffffffNo character found with State ID ${stateId}.`);
+      return;
+    }
+
+    exports.chat.addMessage(source, "^#5e81ac--------- ^#ffffffCharacter Details ^#5e81ac---------");
+    exports.chat.addMessage(source, `^#5e81acCharacter ID: ^#ffffff${character.charId}`);
+    exports.chat.addMessage(source, `^#5e81acUser ID: ^#ffffff${character.userId}`);
+    exports.chat.addMessage(source, `^#5e81acName: ^#ffffff${character.firstName} ${character.lastName ?? ""}`);
+    exports.chat.addMessage(source, `^#5e81acDOB: ^#ffffff${character.dateOfBirth ?? "N/A"}`);
+    exports.chat.addMessage(source, `^#5e81acGender: ^#ffffff${character.gender ?? "N/A"}`);
+    exports.chat.addMessage(source, `^#5e81acLast Played: ^#ffffff${character.lastPlayed?.toLocaleString() ?? "N/A"}`);
+  } catch (error) {
+    console.error("getChar:", error);
+    exports.chat.addMessage(source, "^#d73232ERROR ^#ffffffAn error occurred while fetching character details.");
+  }
+}
+
+async function searchChar(source: number, args: { firstName: string }): Promise<void> {
+  const player = GetPlayer(source);
+
+  if (!player?.charId) return;
+
+  try {
+    const firstName = args.firstName;
+
+    const characters = await db.getCharacterByFirstName(firstName);
+    if (characters.length === 0) {
+      exports.chat.addMessage(source, `^#d73232ERROR ^#ffffffCharacter with name ${firstName} does not exist.`);
+      return;
+    }
+
+    exports.chat.addMessage(source, "^#5e81ac--------- ^#ffffffCharacter Results ^#5e81ac---------");
+    for (const character of characters) {
+      exports.chat.addMessage(source, `^#5e81ac${character.lastName ? `${character.firstName} ${character.lastName}` : character.firstName}`);
+    }
+  } catch (error) {
+    console.error("searchChar:", error);
+    exports.chat.addMessage(source, "^#d73232ERROR ^#ffffffAn error occurred while trying to search for characters.");
   }
 }
 
@@ -121,39 +119,17 @@ async function fetchCharacterNames(source: number): Promise<void> {
     const characters: characters[] = await db.rawQuery<characters[]>(searchCharacters() as any);
     if (characters.length === 0) return;
 
-    sendChatMessage(source, "^#5e81ac--------- ^#ffffffCharacter Names ^#5e81ac---------");
+    exports.chat.addMessage(source, "^#5e81ac--------- ^#ffffffCharacter Names ^#5e81ac---------");
     for (const character of characters) {
-      sendChatMessage(source, `^#5e81ac${character.firstName ?? "N/A"} ${character.lastName ?? "N/A"} ^#ffffff| DOB: ^#5e81ac${character.dateOfBirth ?? "N/A"} ^#ffffff| Gender: ^#5e81ac${character.gender ?? "N/A"}`);
+      exports.chat.addMessage(source, `^#5e81ac${character.firstName ?? "N/A"} ${character.lastName ?? "N/A"} ^#ffffff| DOB: ^#5e81ac${character.dateOfBirth ?? "N/A"} ^#ffffff| Gender: ^#5e81ac${character.gender ?? "N/A"}`);
     }
   } catch (error) {
     console.error("fetchCharacterNames:", error);
-    sendChatMessage(source, "^#d73232ERROR ^#ffffffAn error occurred while fetching character names.");
+    exports.chat.addMessage(source, "^#d73232ERROR ^#ffffffAn error occurred while fetching character names.");
   }
 }
 
 /* Commands */
-
-addCommand(["getchar"], getChar, {
-  params: [
-    {
-      name: "charId",
-      paramType: "number",
-      optional: false,
-    },
-  ],
-  restricted: "group.admin",
-});
-
-addCommand(["searchchar"], searchChar, {
-  params: [
-    {
-      name: "firstName",
-      paramType: "string",
-      optional: false,
-    },
-  ],
-  restricted: "group.admin",
-});
 
 addCommand(["changename"], changeName, {
   params: [
@@ -182,6 +158,28 @@ addCommand(["deleteinactivechars"], deleteInactiveChars, {
       name: "limit",
       paramType: "number",
       optional: true, // Default 30 days if no limit is provided, can leave as optional.
+    },
+  ],
+  restricted: "group.admin",
+});
+
+addCommand(["getchar"], getChar, {
+  params: [
+    {
+      name: "stateId",
+      paramType: "string",
+      optional: false,
+    },
+  ],
+  restricted: "group.admin",
+});
+
+addCommand(["searchchar"], searchChar, {
+  params: [
+    {
+      name: "firstName",
+      paramType: "string",
+      optional: false,
     },
   ],
   restricted: "group.admin",
