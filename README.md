@@ -1,24 +1,17 @@
-<h1 align="center">Monorepo for Prisma within FiveM</h1>
+# Prisma ORM wrapper for FXServer
 
-<p align="center">
-  <a href="https://github.com/arlofonseca/prisma/blob/main/LICENSE">
-    <img src="https://img.shields.io/badge/License-MIT-blue.svg?style=flat" alt="License: MIT">
-  </a>
-  <a href="https://github.com/arlofonseca/prisma/commits/main/">
-    <img src="https://img.shields.io/github/last-commit/arlofonseca/prisma.svg?style=flat" alt="Last Commit">
-  </a>
-</p>
+This is not a complete resource; it's some experimental code and tests for interacting with your database using Prisma.
 
-<p align="center">
-	<h2 align="center"><a href="https://www.prisma.io/docs/orm/overview/introduction/what-is-prisma">Documentation</a></h2>
-</p>
+## Getting Started
 
-## Features
+1. Download and install any LTS release of [Node.js](https://nodejs.org/en) from v22.
+2. Open a command-line terminal (e.g., Terminal, Command Prompt).
+3. Enter `node --version` to verify the installation.
+4. Run `npm install -g pnpm` to globally install the package manager [pnpm](https://pnpm.io).
+5. Install all dependencies with `pnpm i`.
+6. Create a new file named `.env` within the root directory.
+7. Copy the contents of `.env.example` to the newly created `.env` file and edit accordingly.
+8. Add Prisma models to `schema.prisma` and generate Prisma client using `pnpm connect`.
+9. Build the resource with `pnpm build`.
 
-- Database management through class objects (e.g., `Prisma`).
-- Access to a web-based interface via [Prisma Studio](https://www.prisma.io/studio) for easy database workflow management.
-- Generates types based on your database schema for compile-time checks.
-- Perform queries without writing raw SQL (e.g., use fully type-safe SQL with [TypedSQL](https://www.prisma.io/docs/orm/prisma-client/using-raw-sql/typedsql)).
-- Supports various databases (e.g., PostgreSQL, MySQL, MariaDB).
-
-##### _Prisma is an ORM for Node.js and TypeScript that serves as an alternative to writing plain SQL or using other database access tools (e.g., Knex or Sequelize). It simplifies database access and management by providing a type-safe query builder and auto-generator. This is a development tool that was created using [ox_core](https://github.com/overextended/ox_core) database structure and is intended solely as a demonstration of how to utilize Prisma to interact with your database on FiveM._
+Use `pnpm watch` to rebuild whenever a file is modified.

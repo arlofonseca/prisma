@@ -1,18 +1,14 @@
 {
   "name": "prisma",
-  "description": "JavaScript/TypeScript tool containing examples of how to use Prisma ORM for FiveM",
   "author": "arlofonseca",
   "license": "MIT",
   "type": "module",
   "version": "1.0.3",
   "scripts": {
-    "pull": "npx prisma db pull",
-    "generate": "npx prisma generate",
-    "generate:sql": "npx prisma generate --sql",
-    "studio": "npx prisma studio",
+    "connect": "npx prisma db pull && npx prisma generate && npx prisma generate --sql",
+    "web:dev": "npx prisma studio",
     "build": "node build.js",
     "watch": "node build.js --watch",
-    "ci": "pnpm run check && pnpm run build",
     "check": "pnpm biome format",
     "biome-fix": "pnpm biome format --write"
   },

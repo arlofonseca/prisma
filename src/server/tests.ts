@@ -2,11 +2,8 @@ import * as Cfx from "@nativewrappers/fivem/server";
 import { GetPlayer } from "@overextended/ox_core/server";
 import { cache } from "@overextended/ox_lib";
 import { addCommand } from "@overextended/ox_lib/server";
-import { characters } from "@prisma/client";
 import { searchCharacters } from "@prisma/client/sql";
-import db from "../utils/database";
-
-/* Functions */
+import db from "./database";
 
 async function changeName(source: number, args: { playerId: number; firstName: string; lastName: string }) {
   const player = GetPlayer(source);
@@ -24,7 +21,7 @@ async function changeName(source: number, args: { playerId: number; firstName: s
       return;
     }
 
-    await db.updateCharacterName(target.charId, firstName, lastName);
+    await db.update("characters", { charId: target.charId }, { firstName, lastName });
     exports.chat.addMessage(source, `^#5e81acSuccessfully changed ^#ffffff${target.get("name")} ^#5e81acname to ^#ffffff${firstName} ${lastName}`);
   } catch (error) {
     console.error("changeName:", error);
@@ -41,7 +38,7 @@ async function deleteInactiveChars(source: number, args: { limit?: number }): Pr
     const limit = args.limit ?? 30;
     if (isNaN(limit) || limit <= 0) return;
 
-    const count = await db.deleteInactiveCharacters(limit);
+    const count = await db.deleteMany("characters", { lastPlayed: { lt: new Date(Date.now() - limit * 86400000) } });
     if (count === 0) {
       exports.chat.addMessage(source, `^#d73232ERROR ^#ffffffNo inactive characters were found for deletion.`);
       return;
@@ -66,7 +63,7 @@ async function getChar(source: number, args: { stateId: string }): Promise<void>
       return;
     }
 
-    const character = await db.getCharacterByStateId(stateId);
+    const character: any = await db.findUnique("characters", { stateId });
     if (!character) {
       exports.chat.addMessage(source, `^#d73232ERROR ^#ffffffNo character found with State ID ${stateId}.`);
       return;
@@ -93,7 +90,7 @@ async function searchChar(source: number, args: { firstName: string }): Promise<
   try {
     const firstName = args.firstName;
 
-    const characters = await db.getCharacterByFirstName(firstName);
+    const characters: any = await db.findMany("characters", { firstName });
     if (characters.length === 0) {
       exports.chat.addMessage(source, `^#d73232ERROR ^#ffffffCharacter with name ${firstName} does not exist.`);
       return;
@@ -115,8 +112,7 @@ async function fetchCharacterNames(source: number): Promise<void> {
   if (!player?.charId) return;
 
   try {
-    // @ts-ignore
-    const characters: characters[] = await db.rawQuery<characters[]>(searchCharacters() as any);
+    const characters = await db.queryRawTyped(searchCharacters());
     if (characters.length === 0) return;
 
     exports.chat.addMessage(source, "^#5e81ac--------- ^#ffffffCharacter Names ^#5e81ac---------");
@@ -128,8 +124,6 @@ async function fetchCharacterNames(source: number): Promise<void> {
     exports.chat.addMessage(source, "^#d73232ERROR ^#ffffffAn error occurred while fetching character names.");
   }
 }
-
-/* Commands */
 
 addCommand(["changename"], changeName, {
   params: [
@@ -196,9 +190,9 @@ on("onResourceStart", async (resourceName: string): Promise<void> => {
 
   try {
     await db.connect();
-    console.log(`\x1b[32m[${cache.resource}] Successfully connected to database!\x1b[0m`);
+    console.log(`\x1b[94m[${cache.resource}]\x1b[32m Successfully connected to database!\x1b[0m`);
   } catch (error) {
-    console.error(`\x1b[31m[${cache.resource}] Failed to connect to database: ${error}\x1b[0m`);
+    console.error(`\x1b[94m[${cache.resource}]\x1b[31m Failed to connect to database: ${error}\x1b[0m`);
   } finally {
     await db.disconnect();
   }
